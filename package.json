@@ -1,0 +1,18 @@
+{
+  "name": "farmhand-match",
+  "version": "1.0.0",
+  "description": "Farmhand Match-3 Prototype",
+  "main": "index.html",
+  "scripts": {
+    "prepare": "husky install",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "typescript": "^5.0.0",
+    "@types/phaser": "^3.50.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
