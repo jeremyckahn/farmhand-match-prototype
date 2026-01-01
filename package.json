@@ -9,8 +9,8 @@
   },
   "devDependencies": {
     "husky": "^8.0.0",
-    "typescript": "^5.0.0",
-    "@types/phaser": "^3.50.0"
+    "phaser": "^3.90.0",
+    "typescript": "^5.9.3"
   },
   "keywords": [],
   "author": "",
