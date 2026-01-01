@@ -26,6 +26,7 @@ class FarmhandGame extends Phaser.Scene {
         this.nerfedCrop = null;
         this.marketTimer = 0;
 
+        /** @type {Phaser.GameObjects.Text | null} */
         this.selectedTile = null;
         this.isProcessing = false;
     }
@@ -375,6 +376,7 @@ class FarmhandGame extends Phaser.Scene {
                 matches.forEach(tile => {
                     const r = tile.getData('row');
                     const c = tile.getData('col');
+                    // @ts-ignore
                     this.grid[r][c] = null; // Mark as empty
                     tile.destroy();
                 });
@@ -400,6 +402,7 @@ class FarmhandGame extends Phaser.Scene {
                     const targetRow = r + emptySlots;
 
                     this.grid[targetRow][c] = tile;
+                    // @ts-ignore
                     this.grid[r][c] = null;
 
                     tile.setData('row', targetRow);
@@ -430,6 +433,7 @@ class FarmhandGame extends Phaser.Scene {
         if (moves.length > 0) {
             this.tweens.add({
                 targets: moves.map(m => m.tile),
+                // @ts-ignore
                 y: (target, targetKey, value, targetIndex, totalTargets, tween) => {
                      // @ts-ignore
                     return moves.find(m => m.tile === target).targetY;
