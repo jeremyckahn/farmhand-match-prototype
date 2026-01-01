@@ -244,45 +244,9 @@ class FarmhandGame extends Phaser.Scene {
         if (matches.length > 0) {
             this.handleMatches(matches, 0);
         } else {
-            // No match, swap back
-            this.swapTilesNoCheck(tile1, tile2);
+            // No match, but we keep the swap
+            this.isProcessing = false;
         }
-    }
-
-    /**
-     * @param {Phaser.GameObjects.Text} tile1
-     * @param {Phaser.GameObjects.Text} tile2
-     */
-    swapTilesNoCheck(tile1, tile2) {
-        const r1 = tile1.getData('row');
-        const c1 = tile1.getData('col');
-        const r2 = tile2.getData('row');
-        const c2 = tile2.getData('col');
-
-        this.grid[r1][c1] = tile2;
-        this.grid[r2][c2] = tile1;
-
-        tile1.setData('row', r2);
-        tile1.setData('col', c2);
-        tile2.setData('row', r1);
-        tile2.setData('col', c1);
-
-        this.tweens.add({
-            targets: tile1,
-            x: c2 * TILE_SIZE,
-            y: r2 * TILE_SIZE,
-            duration: 200
-        });
-
-        this.tweens.add({
-            targets: tile2,
-            x: c1 * TILE_SIZE,
-            y: r1 * TILE_SIZE,
-            duration: 200,
-            onComplete: () => {
-                this.isProcessing = false;
-            }
-        });
     }
 
     /**
