@@ -47,7 +47,8 @@ class FarmhandGame extends Phaser.Scene {
         // Offset logic to center grid
         this.cameras.main.centerOn(gridWidth / 2 - TILE_SIZE / 2, gridHeight / 2 - TILE_SIZE / 2);
 
-        this.input.on('pointerdown', this.handleInput, this);
+        this.input.on('pointerdown', this.handlePointerDown, this);
+        this.input.on('pointerup', this.handlePointerUp, this);
 
         // Initial Market State
         this.triggerMarketShift();
@@ -77,7 +78,7 @@ class FarmhandGame extends Phaser.Scene {
     /**
      * @param {Phaser.Input.Pointer} pointer
      */
-    handleInput(pointer) {
+    handlePointerDown(pointer) {
         if (this.isProcessing) return;
 
         // Convert world coordinates to grid coordinates
@@ -99,6 +100,62 @@ class FarmhandGame extends Phaser.Scene {
             if (tile) {
                 this.selectTile(tile);
             }
+        }
+    }
+
+    /**
+     * @param {Phaser.Input.Pointer} pointer
+     */
+    handlePointerUp(pointer) {
+        if (this.isProcessing) return;
+
+        const swipeThreshold = TILE_SIZE / 2;
+        const dx = pointer.x - pointer.downX;
+        const dy = pointer.y - pointer.downY;
+
+        // Check if swipe distance is enough
+        if (Math.abs(dx) < swipeThreshold && Math.abs(dy) < swipeThreshold) {
+            return;
+        }
+
+        // Determine direction
+        const isHorizontal = Math.abs(dx) > Math.abs(dy);
+
+        // Calculate source grid coords from the touch start position
+        const worldDown = this.cameras.main.getWorldPoint(pointer.downX, pointer.downY);
+        const startCol = Math.round(worldDown.x / TILE_SIZE);
+        const startRow = Math.round(worldDown.y / TILE_SIZE);
+
+        if (startRow < 0 || startRow >= GRID_ROWS || startCol < 0 || startCol >= GRID_COLS) {
+            return;
+        }
+
+        const sourceTile = this.grid[startRow][startCol];
+        if (!sourceTile) return;
+
+        // Calculate target grid coords
+        let targetRow = startRow;
+        let targetCol = startCol;
+
+        if (isHorizontal) {
+            targetCol += dx > 0 ? 1 : -1;
+        } else {
+            targetRow += dy > 0 ? 1 : -1;
+        }
+
+        if (targetRow < 0 || targetRow >= GRID_ROWS || targetCol < 0 || targetCol >= GRID_COLS) {
+            return;
+        }
+
+        const targetTile = this.grid[targetRow][targetCol];
+        if (targetTile) {
+            // Reset selection state if we are performing a swipe
+            if (this.selectedTile) {
+                this.selectedTile.setScale(1);
+                this.selectedTile = null;
+            }
+
+            this.swapTiles(sourceTile, targetTile);
         }
     }
 
